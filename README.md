@@ -33,9 +33,9 @@ Go to https://api.slack.com/apps and create a new app.
 Give it the following permissions:
 
 *  Send messages as StatusUpdater: `chat:write:bot`
-*  Access your workspace’s profile information: `users:read`
-*  Access user’s profile and workspace profile fields: `users.profile:read`
-*  Modify user’s profile: `users.profile:write`
+*  Access your workspace's profile information: `users:read`
+*  Access user's profile and workspace profile fields: `users.profile:read`
+*  Modify user's profile: `users.profile:write`
 
 Copy the OAuth access token.
 
@@ -57,10 +57,10 @@ $ go run src/github.com/hb9tf/statusupdater/updater.go -aprs_callsign=<Your Call
 
 ### Docker
 
-Build docker image:
+Build Docker image:
 
 `docker build -t updater .`
 
-Run docker image:
+Run Docker image:
 
 `docker run --rm -e "TOKEN=<OAuth token>" -e "CALLSIGN=<Your Callsign>" updater`
