@@ -54,3 +54,13 @@ The real deal:
 ```
 $ go run src/github.com/hb9tf/statusupdater/updater.go -aprs_callsign=<Your Callsign> -slack_token=<OAuth token> >&2
 ```
+
+### Docker
+
+Build docker image:
+
+`docker build -t updater .`
+
+Run docker image:
+
+`docker run --rm -e "TOKEN=<OAuth token>" -e "CALLSIGN=<Your Callsign>" updater`
