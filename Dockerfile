@@ -20,4 +20,4 @@ USER gouser
 ENV TOKEN ""
 ENV CALLSIGN ""
 
-CMD updater -token $TOKEN -callsign $CALLSIGN
+CMD updater -slack_token $TOKEN -aprs_callsign $CALLSIGN
