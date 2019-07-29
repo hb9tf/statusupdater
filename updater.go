@@ -25,7 +25,7 @@ var (
 
 	// Slack specific flags.
 	slackToken      = flag.String("slack_token", "", "token to use to talk to slack")
-	slackExpiration = flag.Duration("slack_expiration", 30*time.Minute, "duration after which the slack status expires")
+	slackExpiration = flag.Duration("slack_expiration", 10*time.Minute, "duration after which the slack status expires")
 	dry             = flag.Bool("dry", false, "do not post to slack channel if true")
 )
 
