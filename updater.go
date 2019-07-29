@@ -15,13 +15,11 @@ import (
 
 var (
 	// APRS specific flags.
-	aprsServer = flag.String("aprs_server", "euro.aprs2.net", "ARPS IS server to connect to")
-	aprsPort   = flag.Int("aprs_port", 14580, "port to connect to on APRS IS server")
-	// See http://www.aprs-is.net/Connecting.aspx
-	aprsCallsign = flag.String("aprs_callsign", "", "callsign to use to log in on APRS IS")
+	aprsServer   = flag.String("aprs_server", "euro.aprs2.net", "ARPS IS server to connect to")
+	aprsPort     = flag.Int("aprs_port", 14580, "port to connect to on APRS IS server")
+	aprsCallsign = flag.String("aprs_callsign", "", "callsign to use to log in on APRS IS") // See http://www.aprs-is.net/Connecting.aspx
 	aprsSSID     = flag.Int("aprs_ssid", 0, "SSID to use to log in to APRS IS")
-	// See http://www.aprs-is.net/javAPRSFilter.aspx
-	aprsFilter = flag.String("aprs_filter", "", "APRS filter")
+	aprsFilter   = flag.String("aprs_filter", "", "APRS filter") // See http://www.aprs-is.net/javAPRSFilter.aspx
 
 	// Slack specific flags.
 	slackToken      = flag.String("slack_token", "", "token to use to talk to slack")
