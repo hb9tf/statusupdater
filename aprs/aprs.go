@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/hb9tf/statusupdater/geo"
 	"github.com/hb9tf/statusupdater/slack"
 	"github.com/hb9tf/statusupdater/user"
 	aprslib "github.com/pd0mz/go-aprs"
@@ -98,9 +99,28 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 	if pkt.Position.Longitude < 0 {
 		pos[4] = "W"
 	}
+
+	var status []string
+	if pkt.Comment != "" {
+		status = append(status, []string{pkt.Comment, "AT"}...)
+	}
+	loc, err := geo.Lookup(pkt.Position.Latitude, pkt.Position.Longitude)
+	if err != nil {
+		log.Printf("error looking up address: %v", err)
+		status = append(status, []string{
+			strings.Join(pos, ""),
+			fmt.Sprintf("(https://aprs.fi/%s-%d)", pkt.Src.Call, pkt.Src.SSID),
+		}...)
+	} else {
+		status = append(status, []string{
+			loc.String(),
+			fmt.Sprintf("(https://aprs.fi/%s-%d)", pkt.Src.Call, pkt.Src.SSID),
+		}...)
+	}
+
 	upChan <- slack.Update{
 		Call:   pkt.Src.Call,
-		Status: fmt.Sprintf("%s %s (https://aprs.fi/%s-%d)", pkt.Comment, strings.Join(pos, ""), pkt.Src.Call, pkt.Src.SSID),
+		Status: strings.Join(status, " "),
 		Emoji:  icon,
 		Source: s.Name(),
 	}
