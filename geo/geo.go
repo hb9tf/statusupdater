@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math"
 	"net/http"
 	"strings"
@@ -87,7 +86,6 @@ func (l *Location) String() string {
 
 func Lookup(lat, lon float64) (*Location, error) {
 	url := fmt.Sprintf(lookupServerTmpl, lat, lon)
-	log.Println(url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
