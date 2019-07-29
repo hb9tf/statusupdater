@@ -14,7 +14,7 @@ var (
 	List = map[string]User{}
 	Lock sync.RWMutex
 
-	callRE = regexp.MustCompile(`((HB3|HB9)[\w]+)`)
+	callRE = regexp.MustCompile(`((HB3|HB9)[\w]{2,3})`)
 )
 
 type User struct {
@@ -35,20 +35,22 @@ func UpdateList(api *slack.Client) {
 	defer Lock.Unlock()
 	// add / update users
 	for _, su := range slackUsers {
-		call := callRE.FindString(strings.ToUpper(su.RealName))
-		if call == "" {
+		calls := callRE.FindAllString(strings.ToUpper(su.RealName), -1)
+		if len(calls) == 0 {
 			log.Printf("ignoring user without callsign: %s / %s\n", su.Name, su.RealName)
 			continue
 		}
-		usr, ok := List[call]
-		if ok {
-			log.Printf("user updated: %s with callsign %s\n", su.RealName, call)
-		} else {
-			usr = User{}
-			log.Printf("user added: %s with callsign %s\n", su.RealName, call)
+		for _, call := range calls {
+			usr, ok := List[call]
+			if ok {
+				log.Printf("user updated: %s with callsign %s\n", su.RealName, call)
+			} else {
+				usr = User{}
+				log.Printf("user added: %s with callsign %s\n", su.RealName, call)
+			}
+			usr.Slack = su
+			List[call] = usr
 		}
-		usr.Slack = su
-		List[call] = usr
 	}
 	// remove users
 	for call := range List {
