@@ -4,7 +4,7 @@
 
 There are some caveats with this:
 
-*  It uses the github.com/nlopes/slack library but that doesn't support modifying other users' slack status out of the box hence you need to patch it (patch provided). I also created https://github.com/nlopes/slack/issues/562 to track this.
+*  It uses the github.com/nlopes/slack library but that doesn't support modifying other users' slack status out of the box hence you need to patch it (patch provided). https://github.com/nlopes/slack/issues/562 to track this.
 
 *  It does not do geo reverse lookups yet so the status will just contain the raw coordinates for now...
 
@@ -12,7 +12,9 @@ There are some caveats with this:
 
 *  There's no rate-limiting or other smart-ness - if someone uses their callsign for more than one device at a time, there might be some confusing status :)
 
-*  It requires the Slack Real Names to contain the callsigns. Format the Real Names like this: First Last (Callsign).
+*  It requires the Slack Real Name or Display Name to contain the callsign(s).
+
+*  The APRS filter (if left empty) is the list of callsigns found in Slack - the filter is only populated once though and changes will not be reflected.
 
 *  Obviously only run one instance in the same workspace at the time...
 
