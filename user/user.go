@@ -35,8 +35,16 @@ func UpdateList(api *slack.Client) {
 	defer Lock.Unlock()
 	// add / update users
 	for _, su := range slackUsers {
+		if su.Deleted {
+			log.Printf("ignoring deleted user: %s / %s\n", su.Name, su.RealName)
+			continue
+		}
 		calls := callRE.FindAllString(strings.ToUpper(su.RealName), -1)
 		if len(calls) == 0 {
+			calls = callRE.FindAllString(strings.ToUpper(su.Profile.DisplayName), -1)
+		}
+		if len(calls) == 0 {
+
 			log.Printf("ignoring user without callsign: %s / %s\n", su.Name, su.RealName)
 			continue
 		}
@@ -57,6 +65,10 @@ func UpdateList(api *slack.Client) {
 		found := false
 		for _, su := range slackUsers {
 			if strings.Contains(strings.ToUpper(su.RealName), call) {
+				found = true
+				break
+			}
+			if strings.Contains(strings.ToUpper(su.Profile.DisplayName), call) {
 				found = true
 				break
 			}
