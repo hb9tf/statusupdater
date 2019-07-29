@@ -10,7 +10,7 @@ There are some caveats with this:
 
 *  It only supports APRS at the moment but the idea is to add Wires-X and others too.
 
-*  There's no rate-limiting or other smart-ness - if someone uses their callsign for more than one device at a time, there might be some confusing status :)
+*  There's only basic throttling per user - if someone uses their callsign for more than one device at a time, there might be some confusing status :)
 
 *  It requires the Slack Real Name or Display Name to contain the callsign(s).
 

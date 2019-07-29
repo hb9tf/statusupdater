@@ -19,7 +19,7 @@ var (
 
 type User struct {
 	Slack            slack.User
-	LastUpdate       *time.Time
+	LastUpdate       time.Time
 	LastUpdateSource string
 }
 

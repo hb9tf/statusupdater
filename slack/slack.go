@@ -4,4 +4,6 @@ type Update struct {
 	Call   string
 	Status string
 	Emoji  string
+
+	Source string
 }

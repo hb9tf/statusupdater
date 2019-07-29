@@ -22,12 +22,14 @@ var (
 	aprsFilter   = flag.String("aprs_filter", "", "APRS filter") // See http://www.aprs-is.net/javAPRSFilter.aspx
 
 	// Slack specific flags.
-	slackToken      = flag.String("slack_token", "", "token to use to talk to slack")
-	slackExpiration = flag.Duration("slack_expiration", 10*time.Minute, "duration after which the slack status expires")
-	dry             = flag.Bool("dry", false, "do not post to slack channel if true")
+	slackToken          = flag.String("slack_token", "", "token to use to talk to slack")
+	slackExpiration     = flag.Duration("slack_expiration", 10*time.Minute, "duration after which the slack status expires")
+	slackUpdateInterval = flag.Duration("slack_update_interval", time.Minute, "do not update slack status more often than this per user")
+	dry                 = flag.Bool("dry", false, "do not post to slack channel if true")
 )
 
 type Source interface {
+	Name() string
 	Run(chan<- slack.Update) error
 }
 
@@ -59,6 +61,18 @@ func main() {
 				log.Printf("no user found for %s", update.Call)
 				continue
 			}
+
+			if !u.LastUpdate.IsZero() && u.LastUpdate.Add(*slackUpdateInterval).After(time.Now()) {
+				log.Printf("not updating user %q already again (last update %s by %s)", update.Call, u.LastUpdate, u.LastUpdateSource)
+				continue
+			}
+
+			u.LastUpdate = time.Now()
+			u.LastUpdateSource = update.Source
+			user.Lock.Lock()
+			user.List[strings.ToUpper(update.Call)] = u
+			user.Lock.Unlock()
+
 			if *dry {
 				log.Printf("DRY: updating %q to new status: %s\n", u.Slack.RealName, update.Status)
 				continue

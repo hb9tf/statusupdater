@@ -74,6 +74,8 @@ type Source struct {
 	client *aprsis.APRSIS
 }
 
+func (s *Source) Name() string { return "APRS" }
+
 func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 	if pkt.Position == nil {
 		//log.Printf("unable to process position without position: %+v", pkt)
@@ -100,6 +102,7 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 		Call:   pkt.Src.Call,
 		Status: fmt.Sprintf("%s %s (https://aprs.fi/%s-%d)", pkt.Comment, strings.Join(pos, ""), pkt.Src.Call, pkt.Src.SSID),
 		Emoji:  icon,
+		Source: s.Name(),
 	}
 	return nil
 }
