@@ -35,6 +35,7 @@ type Source interface {
 
 func main() {
 	flag.Parse()
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
 	// create new slack client
 	api := sl.New(*slackToken)
