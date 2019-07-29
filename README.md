@@ -14,7 +14,7 @@ There are some caveats with this:
 
 *  It requires the Slack Real Name or Display Name to contain the callsign(s).
 
-*  The APRS filter (if left empty) is the list of callsigns found in Slack - the filter is only populated once though and changes will not be reflected.
+*  The APRS filter (if left empty) is the list of callsigns found in Slack - the filter is only populated once though and changes will not be reflected. If this is a problem, consider specifying -aprs_filter directly.
 
 *  Obviously only run one instance in the same workspace at the time...
 
