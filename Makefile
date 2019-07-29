@@ -1,12 +1,8 @@
 REPO="hb9tf/statusupdater"
 TAG="latest"
 
-.PHONY: build, push
+.PHONY: build
 
-build_image:
+build:
 	docker build -t ${REPO}:${TAG} .
-
-push:
 	docker push ${REPO}:${TAG}
-
-build: build_image, push
