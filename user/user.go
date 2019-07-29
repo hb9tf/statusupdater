@@ -14,7 +14,7 @@ var (
 	List = map[string]User{}
 	Lock sync.RWMutex
 
-	callRE = regexp.MustCompile(`((HB3|HB9)[\w]{2,3})`)
+	callRE = regexp.MustCompile(`(\w{2}\d\w{2,3})`)
 )
 
 type User struct {
