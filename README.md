@@ -4,8 +4,6 @@
 
 There are some caveats with this:
 
-*  It uses the github.com/nlopes/slack library but that doesn't support modifying other users' slack status out of the box hence you need to patch it (patch provided). https://github.com/nlopes/slack/issues/562 to track this.
-
 *  It does not do geo reverse lookups yet so the status will just contain the raw coordinates for now...
 
 *  It only supports APRS at the moment but the idea is to add Wires-X and others too.
@@ -21,12 +19,6 @@ There are some caveats with this:
 ## Installing
 
         $ go get -u github.com/hb9tf/statusupdater
-
-### Patching
-
-Patch `github.com/nlopes/slack/users.go` with `slack.users.go.diff` - see https://github.com/nlopes/slack/issues/562 for more details.
-
-Note that the Dockerfile does that automagically when building.
 
 ### AuthN/AuthZ
 
