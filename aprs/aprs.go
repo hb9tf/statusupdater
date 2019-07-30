@@ -6,11 +6,11 @@ import (
 	"math"
 	"strings"
 
+	aprslib "github.com/hb9tf/go-aprs"
+	"github.com/hb9tf/go-aprs/aprsis"
 	"github.com/hb9tf/statusupdater/geo"
 	"github.com/hb9tf/statusupdater/slack"
 	"github.com/hb9tf/statusupdater/user"
-	aprslib "github.com/pd0mz/go-aprs"
-	"github.com/pd0mz/go-aprs/aprsis"
 )
 
 var (
