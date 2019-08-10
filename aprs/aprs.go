@@ -76,7 +76,6 @@ func (s *Source) Name() string { return "APRS" }
 
 func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 	if pkt.Position == nil {
-		//log.Printf("unable to process position without position: %+v", pkt)
 		return nil
 	}
 
@@ -90,7 +89,6 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 			icon = defaultIcon
 		}
 	}
-	log.Printf("icon %q", icon)
 
 	pos := []string{
 		fmt.Sprintf("%.5f", math.Abs(pkt.Position.Latitude)),
