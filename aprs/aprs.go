@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"net/textproto"
 	"strings"
 
 	aprslib "github.com/hb9tf/go-aprs"
@@ -60,19 +61,15 @@ func New(server string, port int, callsign, filter string) (*Source, error) {
 	}
 
 	// create a connection to APRS feed
-	addr := fmt.Sprintf("%s:%d", server, port)
-	client, err := aprsis.Dial("tcp", addr)
+	conn, err := aprsis.Connect("tcp", fmt.Sprintf("%s:%d", server, port), callsign, fltr)
 	if err != nil {
 		return nil, err
 	}
-	if err = client.Login(aprslib.MustParseAddress(callsign), fltr); err != nil {
-		return nil, err
-	}
-	return &Source{client}, nil
+	return &Source{conn}, nil
 }
 
 type Source struct {
-	client *aprsis.APRSIS
+	conn *textproto.Conn
 }
 
 func (s *Source) Name() string { return "APRS" }
@@ -139,7 +136,7 @@ func (s *Source) Run(upChan chan<- slack.Update) error {
 	}()
 
 	// read from APRS feed
-	if err := s.client.ReadPackets(packetChan); err != nil {
+	if err := aprsis.ReadPackets(s.conn, packetChan); err != nil {
 		return err
 	}
 	return nil
