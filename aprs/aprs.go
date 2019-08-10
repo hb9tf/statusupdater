@@ -106,7 +106,7 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 
 	var status []string
 	if pkt.Comment != "" {
-		status = append(status, []string{pkt.Comment, "AT"}...)
+		status = append(status, []string{pkt.Comment, "in"}...)
 	}
 	loc, err := geo.Lookup(pkt.Position.Latitude, pkt.Position.Longitude)
 	if err != nil {
