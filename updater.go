@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -34,6 +35,7 @@ type Source interface {
 
 func main() {
 	flag.Parse()
+	log.SetOutput(os.Stdout)
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
 	// create new slack client
