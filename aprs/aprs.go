@@ -79,10 +79,19 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 		//log.Printf("unable to process position without position: %+v", pkt)
 		return nil
 	}
-	icon, ok := icons[pkt.Src.SSID]
-	if !ok {
-		icon = defaultIcon
+
+	// Try to use icon based on symbol received in APRS message.
+	icon, err := pkt.Symbol.Emoji()
+	// Use icon based on SSID as a fallback.
+	if icon == "" {
+		var ok bool
+		icon, ok = icons[pkt.Src.SSID]
+		if !ok {
+			icon = defaultIcon
+		}
 	}
+	log.Printf("icon %q", icon)
+
 	pos := []string{
 		fmt.Sprintf("%.5f", math.Abs(pkt.Position.Latitude)),
 		"N",
