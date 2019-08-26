@@ -27,7 +27,7 @@ func UpdateList(api *slack.Client) {
 	log.Println("fetching list of users")
 	slackUsers, err := api.GetUsers()
 	if err != nil {
-		log.Printf("unable to get list of users: %v\n", err)
+		log.Printf("unable to get list of users: %s\n", err)
 		return
 	}
 

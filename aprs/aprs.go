@@ -110,7 +110,7 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 	}
 	loc, err := geo.Lookup(pkt.Position.Latitude, pkt.Position.Longitude)
 	if err != nil {
-		log.Printf("error looking up address: %v", err)
+		log.Printf("error looking up address: %s", err)
 		status = append(status, []string{
 			strings.Join(pos, ""),
 			fmt.Sprintf("(https://aprs.fi/%s-%d)", pkt.Src.Call, pkt.Src.SSID),
@@ -137,7 +137,7 @@ func (s *Source) Run(upChan chan<- slack.Update) error {
 		for {
 			packet := <-packetChan
 			if err := s.process(packet, upChan); err != nil {
-				log.Printf("error processing: %v\n", err)
+				log.Printf("error processing: %s\n", err)
 			}
 		}
 	}()
