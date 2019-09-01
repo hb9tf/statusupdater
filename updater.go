@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	sl "github.com/hb9tf/slack"
 	"github.com/hb9tf/statusupdater/aprs"
 	"github.com/hb9tf/statusupdater/slack"
 	"github.com/hb9tf/statusupdater/user"
+	sl "github.com/nlopes/slack"
 )
 
 var (

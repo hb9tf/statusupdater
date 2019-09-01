@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hb9tf/slack"
+	"github.com/nlopes/slack"
 )
 
 var (
