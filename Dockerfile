@@ -8,6 +8,8 @@ RUN CGO_ENABLED=0 go install -v ./...
 
 FROM alpine
 
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
 WORKDIR /
 COPY --from=builder /go/bin/updater /usr/bin/
 
