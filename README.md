@@ -26,6 +26,7 @@ Go to https://api.slack.com/apps and create a new app.
 
 Give it the following permissions:
 
+*  Admin to modify any user's profile: `admin`
 *  Send messages as StatusUpdater: `chat:write:bot`
 *  Access your workspace's profile information: `users:read`
 *  Access user's profile and workspace profile fields: `users.profile:read`
@@ -76,4 +77,4 @@ Build Docker image:
 
 Run Docker image:
 
-`docker run --rm -e "TOKEN=<OAuth token>" -e "CALLSIGN=<Your Callsign>" updater`
+`docker run --rm -e "TOKEN=<OAuth token>" -e "CALLSIGN=<Your Callsign>" -e "SLACKCHANNEL=<slack channel to update>" updater`
