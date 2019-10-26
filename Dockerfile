@@ -20,5 +20,6 @@ USER gouser
 ENV TOKEN ""
 ENV CALLSIGN ""
 ENV SLACKCHANNEL ""
+ENV FLTR ""
 
-CMD updater -slack_token $TOKEN -aprs_callsign $CALLSIGN -slack_channel $SLACKCHANNEL
+CMD updater -slack_token "$TOKEN" -aprs_callsign "$CALLSIGN" -slack_channel "$SLACKCHANNEL" -aprs_filter "$FLTR"
