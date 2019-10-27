@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -16,10 +17,11 @@ import (
 
 var (
 	// APRS specific flags.
-	aprsServer   = flag.String("aprs_server", "euro.aprs2.net", "ARPS IS server to connect to")
-	aprsPort     = flag.Int("aprs_port", 14580, "port to connect to on APRS IS server")
-	aprsCallsign = flag.String("aprs_callsign", "NOCALL", "callsign to use to log in on APRS IS") // See http://www.aprs-is.net/Connecting.aspx
-	aprsFilter   = flag.String("aprs_filter", "", "APRS filter")                                  // See http://www.aprs-is.net/javAPRSFilter.aspx
+	aprsServer          = flag.String("aprs_server", "euro.aprs2.net", "ARPS IS server to connect to")
+	aprsPort            = flag.Int("aprs_port", 14580, "port to connect to on APRS IS server")
+	aprsCallsign        = flag.String("aprs_callsign", "NOCALL", "callsign to use to log in on APRS IS") // See http://www.aprs-is.net/Connecting.aspx
+	aprsFilter          = flag.String("aprs_filter", "", "APRS filter")                                  // See http://www.aprs-is.net/javAPRSFilter.aspx
+	aprsRestartInterval = flag.Duration("aprs_restart_interval", time.Hour, "interval at which to restart APRS feeder")
 
 	// Slack specific flags.
 	slackToken          = flag.String("slack_token", "", "token to use to talk to slack")
@@ -97,18 +99,22 @@ func main() {
 	}()
 
 	// create all sources and run them.
-	var sources []Source
-	s, err := aprs.New(*aprsServer, *aprsPort, strings.ToUpper(*aprsCallsign), *aprsFilter)
-	if err != nil {
-		log.Fatalf("unable to create APRS source: %s", err)
+	sources := []Source{
+		&aprs.Source{
+			Endpoint:        fmt.Sprintf("%s:%d", *aprsServer, *aprsPort),
+			Callsign:        strings.ToUpper(*aprsCallsign),
+			Fltr:            *aprsFilter,
+			RestartInterval: *aprsRestartInterval,
+		},
 	}
-	sources = append(sources, s)
 
 	var wg sync.WaitGroup
 	for _, s := range sources {
 		wg.Add(1)
 		go func() {
-			s.Run(upChan)
+			if err := s.Run(upChan); err != nil {
+				log.Fatalf("unable to start %s source: %s\n", s.Name(), err)
+			}
 		}()
 	}
 	wg.Wait()

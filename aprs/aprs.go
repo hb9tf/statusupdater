@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/textproto"
 	"strings"
+	"time"
 
 	aprslib "github.com/hb9tf/go-aprs"
 	"github.com/hb9tf/go-aprs/aprsis"
@@ -47,7 +48,7 @@ var (
 	}
 )
 
-func New(server string, port int, callsign, filter string) (*Source, error) {
+func getFilter(filter string) string {
 	fltr := filter
 	if fltr == "" {
 		usrs := []string{"p"}
@@ -57,19 +58,19 @@ func New(server string, port int, callsign, filter string) (*Source, error) {
 			usrs = append(usrs, strings.ToLower(call))
 		}
 		fltr = strings.Join(usrs, "/")
-		log.Printf("updated APRS filter to: %s", fltr)
 	}
-
-	// create a connection to APRS feed
-	conn, err := aprsis.Connect("tcp", fmt.Sprintf("%s:%d", server, port), callsign, fltr)
-	if err != nil {
-		return nil, err
-	}
-	return &Source{conn}, nil
+	return fltr
 }
 
 type Source struct {
-	conn *textproto.Conn
+	Endpoint string
+	Callsign string
+	Fltr     string
+
+	RestartInterval time.Duration
+
+	conn       *textproto.Conn
+	packetChan chan aprslib.Packet
 }
 
 func (s *Source) Name() string { return "APRS" }
@@ -131,20 +132,41 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 	return nil
 }
 
+func (s *Source) startAPRS() error {
+	fltr := getFilter(s.Fltr)
+	log.Printf("starting APRS-IS connection using APRS filter: %s\n", fltr)
+	conn, err := aprsis.Connect("tcp", s.Endpoint, s.Callsign, fltr)
+	if err != nil {
+		return err
+	}
+	if s.conn != nil {
+		s.conn.Close()
+	}
+	go func() {
+		if err := aprsis.ReadPackets(conn, s.packetChan); err != nil {
+			fmt.Printf("error reading packets from APRS-IS: %s\n", err)
+		}
+	}()
+	s.conn = conn
+	return nil
+}
+
 func (s *Source) Run(upChan chan<- slack.Update) error {
-	packetChan := make(chan aprslib.Packet, 50)
+	pc := make(chan aprslib.Packet, 50)
+	s.packetChan = pc
 	go func() {
 		for {
-			packet := <-packetChan
+			packet := <-s.packetChan
 			if err := s.process(packet, upChan); err != nil {
 				log.Printf("error processing: %s\n", err)
 			}
 		}
 	}()
 
-	// read from APRS feed
-	if err := aprsis.ReadPackets(s.conn, packetChan); err != nil {
-		return err
+	for {
+		if err := s.startAPRS(); err != nil {
+			log.Printf("error starting APRS connection: %s\n", err)
+		}
+		time.Sleep(s.RestartInterval)
 	}
-	return nil
 }
