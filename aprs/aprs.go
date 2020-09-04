@@ -114,12 +114,12 @@ func (s *Source) process(pkt aprslib.Packet, upChan chan<- slack.Update) error {
 		log.Printf("error looking up address: %s", err)
 		status = append(status, []string{
 			strings.Join(pos, ""),
-			fmt.Sprintf("(https://aprs.fi/%s-%d)", pkt.Src.Call, pkt.Src.SSID),
+			fmt.Sprintf("(https://aprs.fi/%s)", pkt.Src),
 		}...)
 	} else {
 		status = append(status, []string{
 			loc.String(),
-			fmt.Sprintf("(https://aprs.fi/%s-%d)", pkt.Src.Call, pkt.Src.SSID),
+			fmt.Sprintf("(https://aprs.fi/%s)", pkt.Src),
 		}...)
 	}
 
