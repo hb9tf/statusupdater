@@ -12,7 +12,7 @@ import (
 	"github.com/hb9tf/statusupdater/aprs"
 	"github.com/hb9tf/statusupdater/slack"
 	"github.com/hb9tf/statusupdater/user"
-	sl "github.com/nlopes/slack"
+	sl "github.com/slack-go/slack"
 )
 
 var (

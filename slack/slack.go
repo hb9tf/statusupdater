@@ -3,7 +3,7 @@ package slack
 import (
 	"fmt"
 
-	"github.com/nlopes/slack"
+	"github.com/slack-go/slack"
 )
 
 type Update struct {
