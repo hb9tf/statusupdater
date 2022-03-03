@@ -1,3 +1,5 @@
-README.md
+docker-compose.yml
 Dockerfile
 LICENSE
+Makefile
+README.md

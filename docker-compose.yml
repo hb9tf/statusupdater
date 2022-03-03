@@ -1,0 +1,8 @@
+version: "3"
+services:
+  statusupdater:
+    image: hb9tf/statusupdater
+    environment:
+      - TOKEN=XXX
+      - CALLSIGN=YYY
+      - SLACKCHANNEL=ZZZ

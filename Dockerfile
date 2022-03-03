@@ -1,17 +1,19 @@
-FROM golang:1.8 as builder
+FROM golang:1.17 as builder
 
-WORKDIR /go/src/updater
+WORKDIR /usr/src/app
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
 COPY . .
+RUN CGO_ENABLED=0 go build -v -o /usr/local/bin/statusupdater .
 
-RUN go get -d -v ./...
-RUN CGO_ENABLED=0 go install -v ./...
 
 FROM alpine
 
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 WORKDIR /
-COPY --from=builder /go/bin/updater /usr/bin/
+COPY --from=builder /usr/local/bin/statusupdater /usr/bin/
 
 RUN adduser -S gouser
 
@@ -22,4 +24,4 @@ ENV CALLSIGN ""
 ENV SLACKCHANNEL ""
 ENV FLTR ""
 
-CMD updater -slack_token "$TOKEN" -aprs_callsign "$CALLSIGN" -slack_channel "$SLACKCHANNEL" -aprs_filter "$FLTR"
+CMD statusupdater -slack_token "$TOKEN" -aprs_callsign "$CALLSIGN" -slack_channel "$SLACKCHANNEL" -aprs_filter "$FLTR"

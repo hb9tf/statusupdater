@@ -4,5 +4,4 @@ TAG="latest"
 .PHONY: build
 
 build:
-	docker build -t ${REPO}:${TAG} .
-	docker push ${REPO}:${TAG}
+	docker buildx build --platform linux/amd64 --push -t ${REPO}:${TAG} .

@@ -111,11 +111,11 @@ func main() {
 	var wg sync.WaitGroup
 	for _, s := range sources {
 		wg.Add(1)
-		go func() {
+		go func(s Source) {
 			if err := s.Run(upChan); err != nil {
 				log.Fatalf("unable to start %s source: %s\n", s.Name(), err)
 			}
-		}()
+		}(s)
 	}
 	wg.Wait()
 }
